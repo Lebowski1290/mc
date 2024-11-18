@@ -8,63 +8,42 @@
     <div class="circle">
       <img @click="increment" ref="img" id="circle" :src="imgSrc" />
     </div>
-    <!-- Добавляем кнопку для получения двух кликов -->
-    <button v-if="canBuyDoubleClick" @click="buyDoubleClick">Получить +2 клика</button>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import ScoreProgress from '@/components/ScoreProgress.vue';
-import { useScoreStore } from '@/stores/score';
-import frog from '@/assets/frog.png';
-import lizard from '@/assets/lizzard.png';
+import { ref, computed } from 'vue'
+import ScoreProgress from '@/components/ScoreProgress.vue'
+import { useScoreStore } from '@/stores/score'
+import frog from '@/assets/frog.png'
+import lizard from '@/assets/lizzard.png'
 
-const img = ref(null);
-const imgSrc = computed(() => (store.score > 25 ? lizard : frog));
+const img = ref(null)
+const imgSrc = computed(() => (store.score > 25 ? lizard : frog))
 
-const store = useScoreStore();
+const store = useScoreStore()
 
 function increment(event) {
-  store.add(1);
-  const rect = event.target.getBoundingClientRect();
+  store.add(1)
+  const rect = event.target.getBoundingClientRect()
 
-  const offsetX = event.clientX - rect.left - rect.width / 2;
-  const offsetY = event.clientY - rect.top - rect.height / 2;
+  const offfsetX = event.clientX - rect.left - rect.width / 2
+  const offfsetY = event.clientY - rect.top - rect.height / 2
 
-  const DEG = 40;
+  const DEG = 40
 
-  const tiltX = (offsetY / rect.height) * DEG;
-  const tiltY = (offsetX / rect.width) * -DEG;
+  const tiltX = (offfsetY / rect.height) * DEG
+  const tiltY = (offfsetX / rect.width) * -DEG
 
-  const plusOne = document.createElement('div');
-  plusOne.classList.add('plus-one');
-  plusOne.textContent = '+1';
-  plusOne.style.left = `${event.clientX - rect.left}px`;
-  plusOne.style.top = `${event.clientY - rect.top}px`;
 
-  img.value.parentElement.appendChild(plusOne);
+  const plusOne = document.createElement('div')
+  plusOne.classList.add('plus-one')
+  plusOne.textContent = '+1'
+  plusOne.style.left = `${event.clientX - rect.left}px`
+  plusOne.style.top = `${event.clientY - rect.top}px`
 
-  setTimeout(() => plusOne.remove(), 2000);
+  img.value.parentElement.appendChild(plusOne)
+
+  setTimeout(() => plusOne.remove(), 2000)
 }
-
-// Новая функция для добавления двух кликов
-function buyDoubleClick() {
-  if (store.score >= 50) { // Стоимость двух кликов - 50 очков
-    store.decrease(50); // Списываем стоимость
-    store.add(2); // Добавляем два клика
-  }
-}
-
-// Проверяем, может ли пользователь купить двойные клики
-const canBuyDoubleClick = computed(() => store.score >= 50);
 </script>
-
-<style scoped>
-.plus-one {
-  position: absolute;
-  font-size: 20px;
-  color: green;
-  transition: all 2s ease-out;
-}
-</style>
